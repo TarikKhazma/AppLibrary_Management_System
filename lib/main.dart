@@ -9,8 +9,8 @@ import 'core/constants/app_string.dart';
 import 'core/di/injection.dart';
 import 'core/localization/app_localizations.dart';
 import 'core/theme/app_theme.dart';
-import 'presentation/cubits/locale/locale_cubit.dart';
-import 'presentation/screens/main/main_screen.dart';
+import 'shared/cubits/locale/locale_cubit.dart';
+import 'shared/screens/main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,11 +30,11 @@ void main() async {
       startLocale: const Locale('ar'),
       fallbackLocale: const Locale('ar'),
       saveLocale: true,
-      child: DevicePreview(
-        enabled: !kReleaseMode,
-        builder: (context) => BlocProvider(
-          create: (_) => getIt<LocaleCubit>(),
-          child: const LibraryApp(),
+      child: BlocProvider(
+        create: (_) => getIt<LocaleCubit>(),
+        child: DevicePreview(
+          enabled: !kReleaseMode,
+          builder: (context) => const LibraryApp(),
         ),
       ),
     ),
