@@ -1,49 +1,64 @@
 # Library Management System
 
-A full-featured Flutter application for managing a library's books and authors inventory, built with Clean Architecture, Supabase backend, and multilingual support.
+A full-featured Flutter application for managing a library's books and authors inventory, built with Clean Architecture, Supabase backend, JWT authentication, and multilingual support.
 
 ---
 
 ## Features
 
-- **Books Module** — Add, view, and delete books with cover images
-- **Authors Module** — Add, view, and delete authors with profile images
+### Authentication
+- **Login Screen** — Email/password login via [dummyjson.com](https://dummyjson.com) REST API
+- **Signup Screen** — Registration form with password confirmation and privacy policy checkbox
+- **Auto-login** — Persisted JWT token; app opens directly to the main screen if session is valid
+- **Token Refresh** — Automatic access token renewal on expiry
+- **Form Validation** — Inline field errors + floating snackbar summary
+- **Social Buttons** — Facebook and Google sign-in buttons (UI only)
+- **Language Switcher** — Globe button on both auth screens (AR / EN / MS)
+
+### Library Management
+- **Books Module** — Add, edit, soft-delete and restore books with cover images
+- **Authors Module** — Add, edit, soft-delete and restore authors with profile images
+- **Trash** — 30-day soft-delete with permanent delete option
+- **Search** — Live search across books and authors
 - **Home Dashboard** — Live stats showing total books and authors count
-- **Image Support** — URL-based images for both books and authors
-- **Multilingual** — Arabic / English / Malaysian with one-tap language switch
+- **Image Support** — URL-based cover/avatar images with colored-initial fallback
+
+### App-wide
+- **Multilingual** — Arabic / English / Malay with one-tap language switch
 - **RTL Support** — Full right-to-left layout for Arabic
 - **Persistent Language** — Remembers selected language across sessions
 - **Real-time Backend** — Supabase PostgreSQL database
-- **Device Preview** — Built-in device preview for testing across screen sizes
 
 ---
 
 ## Architecture
 
-This project follows **Clean Architecture** with three distinct layers:
+This project follows **Clean Architecture** with feature-based folder organisation:
 
 ```
 lib/
-├── core/                          # Shared utilities
-│   ├── constants/                 # Colors, sizes, strings, text styles, theme
-│   ├── di/                        # Dependency injection (get_it)
-│   ├── localization/              # AppLocalizations + easy_localization
-│   └── theme/                     # App theme (Light + Arabic)
+├── core/                     # Shared utilities (no feature logic)
+│   ├── constants/            # Colors, sizes, text styles, images, theme
+│   ├── di/                   # Dependency injection (get_it + injectable)
+│   ├── localization/         # AppLocalizations + easy_localization
+│   ├── navigation/           # AppRouter (centralised navigation)
+│   └── theme/                # App theme (Light + Arabic)
 │
-├── domain/                        # Business logic (no Flutter dependencies)
-│   ├── entities/                  # Author, Book
-│   ├── repositories/              # Abstract interfaces
-│   └── usecases/                  # GetAuthors, GetBooks, AddAuthor, AddBook
-│
-├── data/                          # Data layer
-│   ├── datasources/               # Supabase remote data sources
-│   ├── models/                    # AuthorModel, BookModel (JSON serialization)
-│   └── repositories/              # Repository implementations
-│
-└── presentation/                  # UI layer
-    ├── cubits/                    # State management (Authors, Books, Locale)
-    ├── screens/                   # Home, Authors, Books, Main
-    └── widgets/                   # Reusable UI components
+└── features/
+    ├── auth/                 # Authentication feature
+    │   ├── data/             # Models, remote datasource, repository impl
+    │   ├── domain/           # Entities, repository interface, use cases
+    │   └── presentation/     # AuthCubit, LoginScreen, SignupScreen, widgets
+    │
+    ├── books/                # Books feature
+    │   ├── data/
+    │   ├── domain/
+    │   └── presentation/
+    │
+    └── authors/              # Authors feature
+        ├── data/
+        ├── domain/
+        └── presentation/
 ```
 
 ---
@@ -53,13 +68,39 @@ lib/
 | Category | Package | Version |
 |---|---|---|
 | State Management | flutter_bloc | ^9.1.1 |
-| Backend | supabase_flutter | ^2.8.4 |
+| Backend (Library) | supabase_flutter | ^2.8.4 |
+| Auth API | http | ^1.2.2 |
 | Dependency Injection | get_it + injectable | ^8.0.3 / ^2.5.0 |
 | Localization | easy_localization | ^3.0.7 |
 | SVG Icons | flutter_svg | ^2.0.14 |
-| Device Testing | device_preview | ^1.2.0 |
+| Token Storage | shared_preferences | ^2.5.3 |
 | Grid Layout | flutter_staggered_grid_view | ^0.7.0 |
-| Persistence | shared_preferences | ^2.5.3 |
+| Device Testing | device_preview | ^1.2.0 |
+
+---
+
+## Authentication Flow
+
+```
+App start
+  └─ LoginScreen.initState → AuthCubit.checkAuth()
+        ├─ No stored token  → stay on LoginScreen
+        └─ Token found      → GET /auth/me
+              ├─ Success    → navigate to MainScreen (silent)
+              └─ Fail       → POST /auth/refresh
+                    ├─ Success → navigate to MainScreen (silent)
+                    └─ Fail    → clear tokens → stay on LoginScreen
+
+User submits login form
+  └─ AuthCubit.login(username, password)
+        ├─ POST /auth/login → save tokens → navigate to MainScreen
+        └─ Error            → show error snackbar
+```
+
+The API used is [dummyjson.com](https://dummyjson.com). Test credentials:
+- **Username:** `emilys` &nbsp;|&nbsp; **Password:** `emilyspass`
+
+Tokens are stored via `SharedPreferences` under the keys `auth_access_token` and `auth_refresh_token`.
 
 ---
 
@@ -99,10 +140,10 @@ Translations are stored as JSON files in `assets/translations/`:
 |---|---|---|
 | `ar.json` | Arabic | RTL |
 | `en.json` | English | LTR |
-| `ms.json` | Malaysian | LTR |
+| `ms.json` | Malay | LTR |
 
-The app uses **easy_localization** with a custom `AppLocalizations` wrapper.  
-Language cycles: **AR → EN → MS → AR** via a single button in the AppBar.
+The app uses **easy_localization** with a custom `AppLocalizations` wrapper.
+Language switch is available via a globe button in the auth screens and in the main AppBar.
 
 ---
 
@@ -151,55 +192,69 @@ lib/
 ├── core/
 │   ├── constants/
 │   │   ├── app_colors.dart        # Color palette (primary: #7C3AED)
-│   │   ├── app_size.dart          # Spacing & radius constants
-│   │   ├── app_string.dart        # Asset paths, font names, Supabase config
-│   │   └── app_text_style.dart    # Typography (Inter EN + Rakkas AR)
+│   │   ├── app_images.dart        # SVG asset path constants
+│   │   ├── app_size.dart          # Spacing, radius & button height constants
+│   │   ├── app_string.dart        # Supabase config, font names
+│   │   └── app_text_style.dart    # Typography (Inter EN/MS + Rakkas AR)
 │   ├── di/
-│   │   └── injection.dart         # Manual get_it registration
+│   │   ├── injection.dart         # get_it configurator entry point
+│   │   └── injection.config.dart  # Auto-generated registrations
 │   ├── localization/
-│   │   └── app_localizations.dart # Localization delegate (easy_localization)
+│   │   ├── app_localizations.dart # Typed getters for every translation key
+│   │   └── locale_keys.g.dart     # Generated key constants
+│   ├── navigation/
+│   │   └── app_router.dart        # toMain / toLogin / toSignup / pop
 │   └── theme/
-│       └── app_theme.dart         # Light theme + Arabic theme (Rakkas font)
+│       └── app_theme.dart         # Light theme + Arabic overrides
 │
-├── domain/
-│   ├── entities/
-│   │   ├── author.dart            # Author(id, name, imageUrl)
-│   │   └── book.dart              # Book(id, title, publishedYear, authorName, imageUrl)
-│   ├── repositories/
-│   │   ├── i_author_repository.dart
-│   │   └── i_book_repository.dart
-│   └── usecases/
-│       ├── get_authors_usecase.dart
-│       ├── get_books_usecase.dart
-│       ├── add_author_usecase.dart
-│       └── add_book_usecase.dart
-│
-├── data/
-│   ├── datasources/
-│   │   ├── author_remote_datasource.dart
-│   │   └── book_remote_datasource.dart    # select('*, authors(name)') JOIN
-│   ├── models/
-│   │   ├── author_model.dart      # fromJson / toJson
-│   │   └── book_model.dart        # fromJson / toJson
-│   └── repositories/
-│       ├── author_repository_impl.dart
-│       └── book_repository_impl.dart
-│
-└── presentation/
-    ├── cubits/
-    │   ├── authors/               # AuthorsCubit + AuthorsState
-    │   ├── books/                 # BooksCubit + BooksState
-    │   └── locale/                # LocaleCubit (AR → EN → MS)
-    ├── screens/
-    │   ├── main/                  # IndexedStack navigation
-    │   ├── home/                  # Stats dashboard
-    │   ├── authors/               # Authors list + add form
-    │   └── books/                 # Books list + add form
-    └── widgets/
-        ├── common/                # GradientAppBar, GradientButton, AppTextField
-        ├── nav_bar/               # AppBottomNavBar
-        ├── authors/               # AuthorListItem, AddAuthorForm
-        └── books/                 # BookListItem, AddBookForm
+└── features/
+    ├── auth/
+    │   ├── data/
+    │   │   ├── datasources/
+    │   │   │   └── auth_remote_datasource.dart   # POST /auth/login, GET /auth/me, POST /auth/refresh
+    │   │   ├── models/
+    │   │   │   └── auth_user_model.dart           # fromJson
+    │   │   └── repositories/
+    │   │       └── auth_repository_impl.dart      # token persistence via SharedPreferences
+    │   ├── domain/
+    │   │   ├── entities/
+    │   │   │   └── auth_user.dart
+    │   │   ├── repositories/
+    │   │   │   └── i_auth_repository.dart
+    │   │   └── usecases/
+    │   │       ├── login_usecase.dart
+    │   │       ├── get_current_user_usecase.dart
+    │   │       └── refresh_token_usecase.dart
+    │   └── presentation/
+    │       ├── cubits/
+    │       │   ├── auth_cubit.dart   # login / checkAuth / logout
+    │       │   └── auth_state.dart   # enum AuthStatus { initial, loading, authenticated, unauthenticated, error }
+    │       ├── screens/
+    │       │   ├── login_screen.dart
+    │       │   └── signup_screen.dart
+    │       └── widgets/
+    │           ├── auth_language_button.dart  # Globe popup (AR / EN / MS)
+    │           ├── auth_logo.dart             # Gradient icon + app name
+    │           ├── auth_or_divider.dart       # "OR" divider line
+    │           ├── auth_submit_button.dart    # Gradient button with loading spinner
+    │           ├── auth_text_field.dart       # Input with inline error + password toggle
+    │           └── social_auth_button.dart    # Facebook / Google buttons
+    │
+    ├── books/
+    │   ├── data/ ...
+    │   ├── domain/ ...
+    │   └── presentation/
+    │       ├── cubits/              # BooksCubit + BooksState
+    │       ├── screens/             # BooksScreen
+    │       └── widgets/             # BookListItem, AddBookForm
+    │
+    └── authors/
+        ├── data/ ...
+        ├── domain/ ...
+        └── presentation/
+            ├── cubits/              # AuthorsCubit + AuthorsState
+            ├── screens/             # AuthorsScreen
+            └── widgets/             # AuthorListItem, AddAuthorForm
 ```
 
 ---
@@ -211,6 +266,7 @@ lib/
 - **Fonts:** Inter (EN/MS) + Rakkas (AR)
 - **Author avatars:** Colored initials fallback or network image
 - **Book covers:** Colored block fallback or network image
+- **Auth screens:** White card layout with social login buttons, inline field validation, floating snackbars
 
 ---
 
@@ -219,9 +275,19 @@ lib/
 All cubits use an **enum-based status** pattern:
 
 ```dart
+// Auth example
+enum AuthStatus { initial, loading, authenticated, unauthenticated, error }
+
+class AuthState extends Equatable {
+  final AuthStatus status;
+  final AuthUser? user;
+  final String? errorMessage;
+}
+
+// Books example
 enum BooksStatus { initial, loading, adding, success, error }
 
-class BooksState {
+class BooksState extends Equatable {
   final List<Book> books;
   final BooksStatus status;
   final String? errorMessage;
