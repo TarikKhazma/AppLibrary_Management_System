@@ -104,18 +104,19 @@ class _SignupScreenState extends State<SignupScreen> {
       listener: (context, state) {
         if (state.status == AuthStatus.authenticated) {
           final loc = AppLocalizations.of(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(loc.signupSuccess),
-              backgroundColor: AppColors.success,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppSize.radiusMd),
+          final messenger = ScaffoldMessenger.of(context);
+          AppRouter.toMain(context);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            messenger.showSnackBar(
+              SnackBar(
+                content: Text(loc.signupSuccess),
+                backgroundColor: AppColors.success,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppSize.radiusMd),
+                ),
               ),
-            ),
-          );
-          Future.delayed(const Duration(milliseconds: 500), () {
-            if (context.mounted) AppRouter.toMain(context);
+            );
           });
         } else if (state.status == AuthStatus.error) {
           final loc = AppLocalizations.of(context);
@@ -164,7 +165,6 @@ class _SignupScreenState extends State<SignupScreen> {
                         label: loc.continueWithFacebook,
                         backgroundColor: const Color(0xFF1877F2),
                         textColor: Colors.white,
-                        svgColor: Colors.white,
                         onTap: () {},
                       ),
                       const SizedBox(height: AppSize.sm),

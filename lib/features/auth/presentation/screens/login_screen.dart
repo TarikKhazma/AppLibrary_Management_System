@@ -80,18 +80,19 @@ class _LoginScreenState extends State<LoginScreen> {
           if (_isManualLogin) {
             _isManualLogin = false;
             final loc = AppLocalizations.of(context);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(loc.loginSuccess),
-                backgroundColor: AppColors.success,
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppSize.radiusMd),
+            final messenger = ScaffoldMessenger.of(context);
+            AppRouter.toMain(context);
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              messenger.showSnackBar(
+                SnackBar(
+                  content: Text(loc.loginSuccess),
+                  backgroundColor: AppColors.success,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppSize.radiusMd),
+                  ),
                 ),
-              ),
-            );
-            Future.delayed(const Duration(milliseconds: 500), () {
-              if (context.mounted) AppRouter.toMain(context);
+              );
             });
           } else {
             AppRouter.toMain(context);
@@ -144,7 +145,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         label: loc.continueWithFacebook,
                         backgroundColor: const Color(0xFF1877F2),
                         textColor: Colors.white,
-                        svgColor: Colors.white,
                         onTap: () {},
                       ),
                       const SizedBox(height: AppSize.sm),
