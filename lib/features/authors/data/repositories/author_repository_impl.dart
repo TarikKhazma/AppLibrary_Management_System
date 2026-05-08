@@ -13,6 +13,9 @@ class AuthorRepositoryImpl implements IAuthorRepository {
   Future<List<Author>> getAuthors() => _dataSource.getAuthors();
 
   @override
+  Future<List<Author>> getDeletedAuthors() => _dataSource.getDeletedAuthors();
+
+  @override
   Future<void> addAuthor(String name, {String? imageUrl}) =>
       _dataSource.addAuthor(name, imageUrl: imageUrl);
 
@@ -22,4 +25,11 @@ class AuthorRepositoryImpl implements IAuthorRepository {
 
   @override
   Future<void> deleteAuthor(String id) => _dataSource.deleteAuthor(id);
+
+  @override
+  Future<void> restoreAuthor(String id) => _dataSource.restoreAuthor(id);
+
+  @override
+  Future<void> permanentlyDeleteAuthor(String id) =>
+      _dataSource.permanentlyDeleteAuthor(id);
 }

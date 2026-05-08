@@ -6,6 +6,7 @@ class Book {
   final String? authorName;
   final String? imageUrl;
   final DateTime createdAt;
+  final DateTime? deletedAt;
 
   const Book({
     required this.id,
@@ -15,5 +16,6 @@ class Book {
     this.authorName,
     this.imageUrl,
     required this.createdAt,
+    this.deletedAt,
   });
 }

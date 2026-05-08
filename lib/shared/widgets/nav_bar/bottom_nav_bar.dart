@@ -4,7 +4,7 @@ import '../../../core/constants/app_size.dart';
 import '../../../core/constants/app_text_style.dart';
 import '../../../core/localization/app_localizations.dart';
 
-enum NavItem { home, books, authors }
+enum NavItem { home, books, authors, search, trash }
 
 class AppBottomNavBar extends StatelessWidget {
   final NavItem currentItem;
@@ -55,6 +55,18 @@ class AppBottomNavBar extends StatelessWidget {
                 isSelected: currentItem == NavItem.authors,
                 onTap: () => onItemSelected(NavItem.authors),
               ),
+              _NavBarItem(
+                icon: Icons.search_rounded,
+                label: loc.search,
+                isSelected: currentItem == NavItem.search,
+                onTap: () => onItemSelected(NavItem.search),
+              ),
+              _NavBarItem(
+                icon: Icons.delete_outline_rounded,
+                label: loc.trash,
+                isSelected: currentItem == NavItem.trash,
+                onTap: () => onItemSelected(NavItem.trash),
+              ),
             ],
           ),
         ),
@@ -84,7 +96,7 @@ class _NavBarItem extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppSize.lg),
+        padding: const EdgeInsets.symmetric(horizontal: AppSize.sm),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

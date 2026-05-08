@@ -5,6 +5,7 @@ import '../models/book_model.dart';
 
 abstract class IBookRemoteDataSource {
   Future<List<BookModel>> getBooks();
+  Future<List<BookModel>> getDeletedBooks();
   Future<void> addBook({
     required String title,
     required int publishedYear,
@@ -19,6 +20,8 @@ abstract class IBookRemoteDataSource {
     String? imageUrl,
   });
   Future<void> deleteBook(String id);
+  Future<void> restoreBook(String id);
+  Future<void> permanentlyDeleteBook(String id);
 }
 
 @LazySingleton(as: IBookRemoteDataSource)
@@ -32,7 +35,23 @@ class BookRemoteDataSource implements IBookRemoteDataSource {
     final response = await _supabase
         .from(AppString.booksTable)
         .select('*, authors(name)')
+        .filter('deleted_at', 'is', null)
         .order('created_at', ascending: false);
+    return (response as List)
+        .map((e) => BookModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  @override
+  Future<List<BookModel>> getDeletedBooks() async {
+    final thirtyDaysAgo =
+        DateTime.now().subtract(const Duration(days: 30)).toIso8601String();
+    final response = await _supabase
+        .from(AppString.booksTable)
+        .select('*, authors(name)')
+        .not('deleted_at', 'is', null)
+        .gte('deleted_at', thirtyDaysAgo)
+        .order('deleted_at', ascending: false);
     return (response as List)
         .map((e) => BookModel.fromJson(e as Map<String, dynamic>))
         .toList();
@@ -71,6 +90,20 @@ class BookRemoteDataSource implements IBookRemoteDataSource {
 
   @override
   Future<void> deleteBook(String id) async {
+    await _supabase
+        .from(AppString.booksTable)
+        .update({'deleted_at': DateTime.now().toIso8601String()}).eq('id', id);
+  }
+
+  @override
+  Future<void> restoreBook(String id) async {
+    await _supabase
+        .from(AppString.booksTable)
+        .update({'deleted_at': null}).eq('id', id);
+  }
+
+  @override
+  Future<void> permanentlyDeleteBook(String id) async {
     await _supabase.from(AppString.booksTable).delete().eq('id', id);
   }
 }

@@ -9,8 +9,9 @@ import 'core/constants/app_string.dart';
 import 'core/di/injection.dart';
 import 'core/localization/app_localizations.dart';
 import 'core/theme/app_theme.dart';
+import 'features/auth/presentation/cubits/auth_cubit.dart';
+import 'features/auth/presentation/screens/login_screen.dart';
 import 'shared/cubits/locale/locale_cubit.dart';
-import 'shared/screens/main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,8 +31,11 @@ void main() async {
       startLocale: const Locale('ar'),
       fallbackLocale: const Locale('ar'),
       saveLocale: true,
-      child: BlocProvider(
-        create: (_) => getIt<LocaleCubit>(),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (_) => getIt<LocaleCubit>()),
+          BlocProvider(create: (_) => getIt<AuthCubit>()),
+        ],
         child: DevicePreview(
           enabled: !kReleaseMode,
           builder: (context) => const LibraryApp(),
@@ -59,7 +63,7 @@ class LibraryApp extends StatelessWidget {
         AppLocalizations.delegate,
         ...context.localizationDelegates,
       ],
-      home: const MainScreen(),
+      home: const LoginScreen(),
     );
   }
 }

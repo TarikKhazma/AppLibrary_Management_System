@@ -14,7 +14,11 @@ class LocaleCubit extends Cubit<LocaleState> {
     final current = context.locale.languageCode;
     final idx = _langs.indexOf(current);
     final next = _langs[(idx + 1) % _langs.length];
-    final newLocale = Locale(next);
+    setLanguage(context, next);
+  }
+
+  void setLanguage(BuildContext context, String langCode) {
+    final newLocale = Locale(langCode);
     context.setLocale(newLocale);
     emit(LocaleState(newLocale));
   }

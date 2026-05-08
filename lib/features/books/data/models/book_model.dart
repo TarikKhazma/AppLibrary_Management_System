@@ -9,6 +9,7 @@ class BookModel extends Book {
     super.authorName,
     super.imageUrl,
     required super.createdAt,
+    super.deletedAt,
   });
 
   factory BookModel.fromJson(Map<String, dynamic> json) => BookModel(
@@ -21,6 +22,9 @@ class BookModel extends Book {
             : null,
         imageUrl: json['image_url'] as String?,
         createdAt: DateTime.parse(json['created_at'] as String),
+        deletedAt: json['deleted_at'] != null
+            ? DateTime.parse(json['deleted_at'] as String)
+            : null,
       );
 
   Map<String, dynamic> toJson() => {

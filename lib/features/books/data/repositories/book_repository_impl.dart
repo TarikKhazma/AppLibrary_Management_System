@@ -13,6 +13,9 @@ class BookRepositoryImpl implements IBookRepository {
   Future<List<Book>> getBooks() => _dataSource.getBooks();
 
   @override
+  Future<List<Book>> getDeletedBooks() => _dataSource.getDeletedBooks();
+
+  @override
   Future<void> addBook({
     required String title,
     required int publishedYear,
@@ -44,4 +47,11 @@ class BookRepositoryImpl implements IBookRepository {
 
   @override
   Future<void> deleteBook(String id) => _dataSource.deleteBook(id);
+
+  @override
+  Future<void> restoreBook(String id) => _dataSource.restoreBook(id);
+
+  @override
+  Future<void> permanentlyDeleteBook(String id) =>
+      _dataSource.permanentlyDeleteBook(id);
 }

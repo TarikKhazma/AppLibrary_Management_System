@@ -1,4 +1,3 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +11,7 @@ class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onMenuPressed;
   final VoidCallback? onAddPressed;
   final List<Widget>? actions;
+  final PreferredSizeWidget? bottom;
 
   const GradientAppBar({
     super.key,
@@ -19,10 +19,13 @@ class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onMenuPressed,
     this.onAddPressed,
     this.actions,
+    this.bottom,
   });
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => Size.fromHeight(
+        kToolbarHeight + (bottom?.preferredSize.height ?? 0),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -36,40 +39,55 @@ class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
           backgroundColor: Colors.transparent,
           elevation: 0,
           systemOverlayStyle: SystemUiOverlayStyle.light,
-          leading: IconButton(
-            icon: const Icon(Icons.menu_rounded, color: Colors.white),
-            onPressed: onMenuPressed ?? () {},
+          leading: Builder(
+            builder: (ctx) => IconButton(
+              icon: const Icon(Icons.menu_rounded, color: Colors.white),
+              onPressed: onMenuPressed ?? () => Scaffold.of(ctx).openDrawer(),
+            ),
           ),
           title: Text(title, style: AppTextStyle.appBarTitle),
           centerTitle: true,
+          bottom: bottom,
           actions: [
-            GestureDetector(
-              onTap: () => context.read<LocaleCubit>().cycleLanguage(context),
-              child: Container(
-                margin: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 4,
-                ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSize.sm,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(AppSize.radiusFull),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.5),
-                    width: 1,
-                  ),
-                ),
-                child: Text(
-                  context.locale.languageCode.toUpperCase(),
-                  style: AppTextStyle.labelMedium.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+            PopupMenuButton<String>(
+              tooltip: '',
+              offset: const Offset(0, 44),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppSize.radiusMd),
               ),
+              icon: const Icon(
+                Icons.language_rounded,
+                color: Colors.white,
+                size: 26,
+              ),
+              onSelected: (code) =>
+                  context.read<LocaleCubit>().setLanguage(context, code),
+              itemBuilder: (_) => const [
+                PopupMenuItem(
+                  value: 'ar',
+                  child: Row(children: [
+                    Text('🇸🇦', style: TextStyle(fontSize: 22)),
+                    SizedBox(width: 10),
+                    Text('العربية'),
+                  ]),
+                ),
+                PopupMenuItem(
+                  value: 'en',
+                  child: Row(children: [
+                    Text('🇺🇸', style: TextStyle(fontSize: 22)),
+                    SizedBox(width: 10),
+                    Text('English'),
+                  ]),
+                ),
+                PopupMenuItem(
+                  value: 'ms',
+                  child: Row(children: [
+                    Text('🇲🇾', style: TextStyle(fontSize: 22)),
+                    SizedBox(width: 10),
+                    Text('Melayu'),
+                  ]),
+                ),
+              ],
             ),
             if (actions != null) ...actions!,
             if (onAddPressed != null)

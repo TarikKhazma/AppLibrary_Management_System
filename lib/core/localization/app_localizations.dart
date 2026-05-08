@@ -54,6 +54,43 @@ class AppLocalizations {
   String get welcome => LocaleKeys.welcome.tr();
   String get enterImageUrl => LocaleKeys.enter_image_url.tr();
   String get imageUrl => LocaleKeys.image_url.tr();
+  String get search => LocaleKeys.search.tr();
+  String get searchHint => LocaleKeys.search_hint.tr();
+  String get noResults => LocaleKeys.no_results.tr();
+  String get trash => LocaleKeys.trash.tr();
+  String get restore => LocaleKeys.restore.tr();
+  String get deleteForever => LocaleKeys.delete_forever.tr();
+  String get daysRemaining => LocaleKeys.days_remaining.tr();
+  String get emptyTrash => LocaleKeys.empty_trash.tr();
+  String get deletedBooks => LocaleKeys.deleted_books.tr();
+  String get deletedAuthors => LocaleKeys.deleted_authors.tr();
+  String get bookRestoredSuccess => LocaleKeys.book_restored_success.tr();
+  String get authorRestoredSuccess => LocaleKeys.author_restored_success.tr();
+  String get bookPermanentlyDeleted => LocaleKeys.book_permanently_deleted.tr();
+  String get authorPermanentlyDeleted => LocaleKeys.author_permanently_deleted.tr();
+  String get libraryHub => LocaleKeys.library_hub.tr();
+  String get welcomeBack => LocaleKeys.welcome_back.tr();
+  String get createAccount => LocaleKeys.create_account.tr();
+  String get continueWithFacebook => LocaleKeys.continue_with_facebook.tr();
+  String get continueWithGoogle => LocaleKeys.continue_with_google.tr();
+  String get orLoginWithEmail => LocaleKeys.or_login_with_email.tr();
+  String get password => LocaleKeys.password.tr();
+  String get confirmPassword => LocaleKeys.confirm_password.tr();
+  String get signIn => LocaleKeys.sign_in.tr();
+  String get signUp => LocaleKeys.sign_up.tr();
+  String get getStarted => LocaleKeys.get_started.tr();
+  String get forgotPassword => LocaleKeys.forgot_password.tr();
+  String get noAccount => LocaleKeys.no_account.tr();
+  String get haveAccount => LocaleKeys.have_account.tr();
+  String get privacyPolicyPrefix => LocaleKeys.privacy_policy_prefix.tr();
+  String get privacyPolicy => LocaleKeys.privacy_policy.tr();
+  String get loginFailed => LocaleKeys.login_failed.tr();
+  String get signupFailed => LocaleKeys.signup_failed.tr();
+  String get passwordTooShort => LocaleKeys.password_too_short.tr();
+  String get passwordsNotMatch => LocaleKeys.passwords_not_match.tr();
+  String get mustAgreeToPolicy => LocaleKeys.must_agree_to_policy.tr();
+  String get loginSuccess => LocaleKeys.login_success.tr();
+  String get signupSuccess => LocaleKeys.signup_success.tr();
 }
 
 class _Delegate extends LocalizationsDelegate<AppLocalizations> {

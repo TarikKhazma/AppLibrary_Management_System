@@ -2,6 +2,7 @@ import '../entities/book.dart';
 
 abstract class IBookRepository {
   Future<List<Book>> getBooks();
+  Future<List<Book>> getDeletedBooks();
   Future<void> addBook({
     required String title,
     required int publishedYear,
@@ -16,4 +17,6 @@ abstract class IBookRepository {
     String? imageUrl,
   });
   Future<void> deleteBook(String id);
+  Future<void> restoreBook(String id);
+  Future<void> permanentlyDeleteBook(String id);
 }
