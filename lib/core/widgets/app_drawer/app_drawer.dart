@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_colors.dart';
+import '../../constants/app_colors.dart';
 import 'drawer_about.dart';
 import 'drawer_header.dart';
 import 'drawer_language.dart';

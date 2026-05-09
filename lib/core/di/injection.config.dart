@@ -73,7 +73,7 @@ import 'package:library_management_system/features/books/presentation/cubits/boo
     as _i1057;
 import 'package:library_management_system/features/trash/presentation/cubits/trash_cubit.dart'
     as _i900;
-import 'package:library_management_system/shared/cubits/locale/locale_cubit.dart'
+import 'package:library_management_system/features/locale/locale_cubit.dart'
     as _i464;
 import 'package:supabase_flutter/supabase_flutter.dart' as _i454;
 

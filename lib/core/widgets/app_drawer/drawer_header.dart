@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_size.dart';
-import '../../../core/constants/app_text_style.dart';
-import '../../../core/localization/app_localizations.dart';
+import '../../constants/app_colors.dart';
+import '../../constants/app_size.dart';
+import '../../constants/app_text_style.dart';
+import '../../localization/app_localizations.dart';
 
 class AppDrawerHeader extends StatelessWidget {
   const AppDrawerHeader({super.key});

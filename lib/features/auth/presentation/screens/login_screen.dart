@@ -27,15 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   String? _usernameError;
   String? _passwordError;
-  bool _isManualLogin = false;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AuthCubit>().checkAuth();
-    });
-  }
 
   @override
   void dispose() {
@@ -68,7 +59,6 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    _isManualLogin = true;
     context.read<AuthCubit>().login(username, password);
   }
 
@@ -77,26 +67,21 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.authenticated) {
-          if (_isManualLogin) {
-            _isManualLogin = false;
-            final loc = AppLocalizations.of(context);
-            final messenger = ScaffoldMessenger.of(context);
-            AppRouter.toMain(context);
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              messenger.showSnackBar(
-                SnackBar(
-                  content: Text(loc.loginSuccess),
-                  backgroundColor: AppColors.success,
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppSize.radiusMd),
-                  ),
+          final loc = AppLocalizations.of(context);
+          final messenger = ScaffoldMessenger.of(context);
+          AppRouter.toMain(context);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            messenger.showSnackBar(
+              SnackBar(
+                content: Text(loc.loginSuccess),
+                backgroundColor: AppColors.success,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppSize.radiusMd),
                 ),
-              );
-            });
-          } else {
-            AppRouter.toMain(context);
-          }
+              ),
+            );
+          });
         } else if (state.status == AuthStatus.error) {
           final loc = AppLocalizations.of(context);
           ScaffoldMessenger.of(context).showSnackBar(
@@ -113,8 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
       },
       builder: (context, state) {
         final loc = AppLocalizations.of(context);
-        final isLoading = state.status == AuthStatus.initial ||
-            state.status == AuthStatus.loading;
+        final isLoading = state.status == AuthStatus.loading;
 
         return Scaffold(
           backgroundColor: AppColors.background,

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_size.dart';
-import '../../../core/constants/app_text_style.dart';
-import '../../../core/localization/app_localizations.dart';
+import '../../constants/app_colors.dart';
+import '../../constants/app_size.dart';
+import '../../constants/app_text_style.dart';
+import '../../localization/app_localizations.dart';
 import '../../../features/authors/presentation/cubits/authors_cubit.dart';
 import '../../../features/authors/presentation/cubits/authors_state.dart';
 import '../../../features/books/presentation/cubits/books_cubit.dart';

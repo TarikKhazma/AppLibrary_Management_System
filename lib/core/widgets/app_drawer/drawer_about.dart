@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_size.dart';
-import '../../../core/constants/app_text_style.dart';
+import '../../constants/app_colors.dart';
+import '../../constants/app_size.dart';
+import '../../constants/app_text_style.dart';
 
 class DrawerAbout extends StatelessWidget {
   const DrawerAbout({super.key});

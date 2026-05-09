@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_size.dart';
-import '../../../core/constants/app_text_style.dart';
-import '../../cubits/locale/locale_cubit.dart';
+import '../../constants/app_colors.dart';
+import '../../constants/app_size.dart';
+import '../../constants/app_text_style.dart';
+import '../../../features/locale/locale_cubit.dart';
 
 class DrawerLanguage extends StatelessWidget {
   const DrawerLanguage({super.key});

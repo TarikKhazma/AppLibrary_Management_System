@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_size.dart';
 import '../constants/app_text_style.dart';
-import '../../shared/cubits/locale/locale_cubit.dart';
+import '../../features/locale/locale_cubit.dart';
 
 class GradientAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;

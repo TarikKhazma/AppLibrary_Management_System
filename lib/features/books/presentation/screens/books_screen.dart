@@ -7,8 +7,8 @@ import '../../../authors/presentation/cubits/authors_state.dart';
 import '../widgets/add_book_form.dart';
 import '../widgets/books_list_view.dart';
 import '../../../../core/widgets/gradient_app_bar.dart';
-import '../../../../shared/widgets/app_drawer/app_drawer.dart';
-import '../../../../shared/widgets/nav_bar/bottom_nav_bar.dart';
+import '../../../../core/widgets/app_drawer/app_drawer.dart';
+import '../../../../core/widgets/nav_bar/bottom_nav_bar.dart';
 
 class BooksScreen extends StatelessWidget {
   final NavItem currentNavItem;

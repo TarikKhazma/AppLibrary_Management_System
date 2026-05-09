@@ -4,8 +4,8 @@ import '../../../../core/localization/app_localizations.dart';
 import '../widgets/add_author_form.dart';
 import '../widgets/authors_list_view.dart';
 import '../../../../core/widgets/gradient_app_bar.dart';
-import '../../../../shared/widgets/app_drawer/app_drawer.dart';
-import '../../../../shared/widgets/nav_bar/bottom_nav_bar.dart';
+import '../../../../core/widgets/app_drawer/app_drawer.dart';
+import '../../../../core/widgets/nav_bar/bottom_nav_bar.dart';
 
 class AuthorsScreen extends StatelessWidget {
   final NavItem currentNavItem;

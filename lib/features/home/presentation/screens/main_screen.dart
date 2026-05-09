@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../core/di/injection.dart';
-import '../../features/authors/presentation/cubits/authors_cubit.dart';
-import '../../features/authors/presentation/screens/authors_screen.dart';
-import '../../features/books/presentation/cubits/books_cubit.dart';
-import '../../features/books/presentation/screens/books_screen.dart';
-import '../../features/home/presentation/screens/home_screen.dart';
-import '../../features/search/presentation/screens/search_screen.dart';
-import '../../features/trash/presentation/cubits/trash_cubit.dart';
-import '../../features/trash/presentation/screens/trash_screen.dart';
-import '../widgets/nav_bar/bottom_nav_bar.dart';
+import '../../../../core/di/injection.dart';
+import '../../../authors/presentation/cubits/authors_cubit.dart';
+import '../../../authors/presentation/screens/authors_screen.dart';
+import '../../../books/presentation/cubits/books_cubit.dart';
+import '../../../books/presentation/screens/books_screen.dart';
+import 'home_screen.dart';
+import '../../../search/presentation/screens/search_screen.dart';
+import '../../../trash/presentation/cubits/trash_cubit.dart';
+import '../../../trash/presentation/screens/trash_screen.dart';
+import '../../../../core/widgets/nav_bar/bottom_nav_bar.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
