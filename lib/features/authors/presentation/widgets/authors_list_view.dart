@@ -17,6 +17,9 @@ class AuthorsListView extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     return BlocConsumer<AuthorsCubit, AuthorsState>(
+      listenWhen: (prev, curr) =>
+          curr.status == AuthorsStatus.success ||
+          curr.status == AuthorsStatus.error,
       listener: (context, state) {
         if (state.status == AuthorsStatus.error &&
             state.errorMessage != null) {

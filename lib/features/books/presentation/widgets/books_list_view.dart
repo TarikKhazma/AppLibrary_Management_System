@@ -19,6 +19,9 @@ class BooksListView extends StatelessWidget {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     return BlocConsumer<BooksCubit, BooksState>(
+      listenWhen: (prev, curr) =>
+          curr.status == BooksStatus.success ||
+          curr.status == BooksStatus.error,
       listener: (context, state) {
         if (state.status == BooksStatus.error && state.errorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
